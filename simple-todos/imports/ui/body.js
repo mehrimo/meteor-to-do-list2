@@ -1,12 +1,19 @@
 import { Template } from 'meteor/templating';
+import { ReactiveDict } from 'meteor/reactive-dict';
+
 
 import { Tasks } from '../api/tasks.js';
 
+import './task.js';
 import './body.html';
+
+Template.body.onCreated(function bodyOnCreated() {
+  this.state = new ReactiveDict();
+});
 
 Template.body.helpers({
   tasks() {
-    return Tasks.find({});
+    return Tasks.find({}, { sort: { createdAt: -1 } });
   },
 });
 
@@ -18,6 +25,7 @@ Template.body.events({
     // Get value from form element
     const target = event.target;
     const text = target.text.value;
+    console.log(target.text.value);
 
     // Insert a task into the collection
     Tasks.insert({
